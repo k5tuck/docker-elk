@@ -34,6 +34,20 @@ services:
     depends_on:
       - elasticsearch
 
+  rabbitmq:
+    build:
+      context: rabbitmq/
+      args:
+        RABBIT_VERSION: ${RABBIT_VERSION}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+
   elasticsearch:
     build:
       context: elasticsearch/
