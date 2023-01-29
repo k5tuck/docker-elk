@@ -30,20 +30,24 @@ services:
       MONITORING_INTERNAL_PASSWORD: ${MONITORING_INTERNAL_PASSWORD:-}
       BEATS_SYSTEM_PASSWORD: ${BEATS_SYSTEM_PASSWORD:-}
     networks:
-      - elk
+      - relk-proxy
     depends_on:
       - elasticsearch
 
   rabbitmq:
+    container_name: rabbitmq
     build:
       context: rabbitmq/
       args:
         RABBIT_VERSION: ${RABBIT_VERSION}
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - 5672:5672
+      - 15672:15672
+    expose:
+      - 5672
+      - 15672
     networks:
-      - elk
+      - relk-proxy
     depends_on:
       - elasticsearch
     restart: unless-stopped
@@ -70,10 +74,11 @@ services:
       # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
       discovery.type: single-node
     networks:
-      - elk
+      - relk-proxy
     restart: unless-stopped
 
   logstash:
+    container_name: logstash
     build:
       context: logstash/
       args:
@@ -90,12 +95,13 @@ services:
       LS_JAVA_OPTS: -Xms256m -Xmx256m
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
     networks:
-      - elk
+      - relk-proxy
     depends_on:
       - elasticsearch
     restart: unless-stopped
 
   kibana:
+    container_name: kibana
     build:
       context: kibana/
       args:
@@ -107,14 +113,14 @@ services:
     environment:
       KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD:-}
     networks:
-      - elk
+      - relk-proxy
     depends_on:
       - elasticsearch
     restart: unless-stopped
 
 networks:
-  elk:
-    driver: bridge
+  relk-proxy:
+      name: blueclean
 
 volumes:
   setup:
