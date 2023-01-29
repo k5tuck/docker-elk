@@ -34,23 +34,23 @@ services:
     depends_on:
       - elasticsearch
 
-  rabbitmq:
-    container_name: rabbitmq
-    build:
-      context: rabbitmq/
-      args:
-        RABBIT_VERSION: ${RABBIT_VERSION}
-    ports:
-      - 5672:5672
-      - 15672:15672
-    expose:
-      - 5672
-      - 15672
-    networks:
-      - relk-proxy
-    depends_on:
-      - elasticsearch
-    restart: unless-stopped
+  # rabbitmq:
+  #   container_name: rabbitmq
+  #   build:
+  #     context: rabbitmq/
+  #     args:
+  #       RABBIT_VERSION: ${RABBIT_VERSION}
+  #   ports:
+  #     - 5672:5672
+  #     - 15672:15672
+  #   expose:
+  #     - 5672
+  #     - 15672
+  #   networks:
+  #     - relk-proxy
+  #   depends_on:
+  #     - elasticsearch
+  #   restart: unless-stopped
 
   elasticsearch:
     build:
